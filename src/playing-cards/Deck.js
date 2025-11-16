@@ -1,13 +1,15 @@
-import { Card } from './Card.js';
-import { PlayingCardError } from './PlayingCardError.js';
-import { arraySkipIterator } from './utility.js';
+import { Card } from "./Card.js";
+import { PlayingCardError } from "./PlayingCardError.js";
+import { arraySkipIterator } from "./utility.js";
 
 class Deck {
   static NUMBER_OF_CARDS = 52;
 
-  constructor() {
-    this._buildDeck();
-    //this[Symbol.iterator] = this._cards[Symbol.iterator];
+  constructor(size = 52) {
+    this._size = size;
+    if (new.target === Deck) {
+      this._buildDeck();
+    }
   }
 
   *[Symbol.iterator]() {
@@ -16,12 +18,16 @@ class Deck {
     }
   }
 
+  get size() {
+    return Deck.NUMBER_OF_CARDS;
+  }
+
   get cardsRemaining() {
     return this._cards.length;
   }
 
   _buildDeck() {
-    this._cards = new Array(Deck.size);
+    this._cards = new Array(Deck.NUMBER_OF_CARDS);
     let index = 0;
 
     for (const suit of Card.suits()) {
