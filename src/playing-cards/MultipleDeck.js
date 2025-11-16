@@ -4,7 +4,12 @@ import { Deck } from "./Deck";
 class MultipleDeck extends Deck {
   constructor(numberOfDecks = 1) {
     super();
+
     this.numberOfDecks = numberOfDecks;
+
+    if (new.target === MultipleDeck) {
+      this._buildDeck();
+    }
   }
 
   _buildDeck() {

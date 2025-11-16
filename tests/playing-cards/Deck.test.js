@@ -1,26 +1,29 @@
-import { describe, test, expect } from 'vitest';
-import { Deck } from '../../src/playing-cards/Deck.js';
-import { Card } from '../../src/playing-cards/Card.js';
-import { PlayingCardError } from '../../src/playing-cards/PlayingCardError.js';
+import { describe, test, expect } from "vitest";
+import { Deck } from "../../src/playing-cards/Deck.js";
+import { Card } from "../../src/playing-cards/Card.js";
+import { PlayingCardError } from "../../src/playing-cards/PlayingCardError.js";
 
-describe('Class Deck', () => {
-  test('Constructor', () => {
+describe("Class Deck", () => {
+  const expectedsize = 52;
+
+  test("Constructor", () => {
     const deck = new Deck();
     expect(deck).toBeInstanceOf(Deck);
   });
 
-  test('There shold be 52 cards in a fresh deck', () => {
+  test("There shold be 52 cards in a fresh deck", () => {
     const deck = new Deck();
-    expect(deck.cardsRemaining).toBe(52);
+    expect(deck.size).toBe(expectedsize);
+    expect(deck.cardsRemaining).toBe(expectedsize);
   });
 
-  test('The deck should be iterable', () => {
+  test("The deck should be iterable", () => {
     const deck = new Deck();
     const cards = [...deck];
-    expect(cards.length).toBe(52);
+    expect(cards.length).toBe(expectedsize);
   });
 
-  test('We can shuffle the deck', () => {
+  test("We can shuffle the deck", () => {
     const deck = new Deck();
     const oldOrder = [...deck];
 
@@ -30,31 +33,31 @@ describe('Class Deck', () => {
     expect(newOrder).not.toEqual(oldOrder);
   });
 
-  test('We can deal a single card by default', () => {
-    const expectedCardsRemaining = Deck.NUMBER_OF_CARDS - 1;
+  test("We can deal a single card by default", () => {
     const deck = new Deck();
     const card = deck.deal();
+    const expectedCardsRemaining = deck.size - 1;
 
     expect(card).not.toBeNull();
     expect(card).toBeInstanceOf(Card);
     expect(deck.cardsRemaining).toBe(expectedCardsRemaining);
   });
 
-  test('We can deal a single card', () => {
-    const expectedCardsRemaining = Deck.NUMBER_OF_CARDS - 1;
+  test("We can deal a single card", () => {
     const deck = new Deck();
     const card = deck.deal(1);
+    const expectedCardsRemaining = deck.size - 1;
 
     expect(card).not.toBeNull();
     expect(card).toBeInstanceOf(Card);
     expect(deck.cardsRemaining).toBe(expectedCardsRemaining);
   });
 
-  test('We can deal multiple cards', () => {
+  test("We can deal multiple cards", () => {
     const cardsToDeal = 5;
-    const expectedCardsRemaining = Deck.NUMBER_OF_CARDS - cardsToDeal;
     const deck = new Deck();
     const hand = deck.deal(cardsToDeal);
+    const expectedCardsRemaining = deck.size - cardsToDeal;
 
     expect(hand).not.toBeNull();
     expect(hand).toBeInstanceOf(Array);
@@ -68,21 +71,19 @@ describe('Class Deck', () => {
     expect(() => deck.deal(0)).toThrow(
       new PlayingCardError(`Invalid number of cards: 0`)
     );
-    expect(() => deck.deal(Deck.NUMBER_OF_CARDS + 1)).toThrow(
-      new PlayingCardError(
-        `Invalid number of cards: ${Deck.NUMBER_OF_CARDS + 1}`
-      )
+    expect(() => deck.deal(deck.size + 1)).toThrow(
+      new PlayingCardError(`Invalid number of cards: ${deck.size + 1}`)
     );
   });
 
-  test('We can deal a single card by default to multiple players', () => {
+  test("We can deal a single card by default to multiple players", () => {
     const numberOfPlayers = 3;
     const cardsToDeal = 1;
-    const expectedCardsRemaining =
-      Deck.NUMBER_OF_CARDS - numberOfPlayers * cardsToDeal;
 
     const deck = new Deck();
-    const hands = deck.multiPlayerDeal(3);
+    const hands = deck.multiPlayerDeal(numberOfPlayers);
+
+    const expectedCardsRemaining = deck.size - numberOfPlayers * cardsToDeal;
 
     expect(hands).toBeInstanceOf(Array);
     expect(hands.length).toBe(numberOfPlayers);
@@ -90,29 +91,29 @@ describe('Class Deck', () => {
     expect(deck.cardsRemaining).toBe(expectedCardsRemaining);
   });
 
-  test('We can deal a single card to multiple players', () => {
+  test("We can deal a single card to multiple players", () => {
     const numberOfPlayers = 3;
     const cardsToDeal = 1;
-    const expectedCardsRemaining =
-      Deck.NUMBER_OF_CARDS - numberOfPlayers * cardsToDeal;
 
     const deck = new Deck();
     const hands = deck.multiPlayerDeal(numberOfPlayers, cardsToDeal);
 
+    const expectedCardsRemaining = deck.size - numberOfPlayers * cardsToDeal;
+
     expect(hands).toBeInstanceOf(Array);
     expect(hands.length).toBe(numberOfPlayers);
     expect(hands.every((hand) => hand instanceof Card)).toBe(true);
     expect(deck.cardsRemaining).toBe(expectedCardsRemaining);
   });
 
-  test('We can deal multiple cards to multiple players', () => {
+  test("We can deal multiple cards to multiple players", () => {
     const numberOfPlayers = 3;
     const cardsToDeal = 5;
-    const expectedCardsRemaining =
-      Deck.NUMBER_OF_CARDS - numberOfPlayers * cardsToDeal;
 
     const deck = new Deck();
     const hands = deck.multiPlayerDeal(numberOfPlayers, cardsToDeal);
+
+    const expectedCardsRemaining = deck.size - numberOfPlayers * cardsToDeal;
 
     expect(hands.length).toBe(numberOfPlayers);
     expect(hands.every((hand) => hand instanceof Array)).toBe(true);
@@ -122,7 +123,7 @@ describe('Class Deck', () => {
   });
 
   test.for([[0, 1], [Deck.NUMBER_OF_CARDS + 1]])(
-    'The multiPlayerDeal method should throw on invalid numberOfPlayers',
+    "The multiPlayerDeal method should throw on invalid numberOfPlayers",
     ([numberOfPlayers, cardsToDeal]) => {
       const deck = new Deck();
       expect(() => {
@@ -137,7 +138,7 @@ describe('Class Deck', () => {
     [2, 0],
     [2, Deck.NUMBER_OF_CARDS],
   ])(
-    'The multiPlayerDeal method should throw on invalid numberOfCards',
+    "The multiPlayerDeal method should throw on invalid numberOfCards",
     ([numberOfPlayers, cardsToDeal]) => {
       const deck = new Deck();
       expect(() => {

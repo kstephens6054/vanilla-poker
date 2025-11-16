@@ -27,7 +27,7 @@ class Deck {
   }
 
   _buildDeck() {
-    this._cards = new Array(Deck.NUMBER_OF_CARDS);
+    this._cards = new Array(this.size);
     let index = 0;
 
     for (const suit of Card.suits()) {
@@ -43,7 +43,7 @@ class Deck {
   }
 
   deal(numberOfCards = 1) {
-    if (numberOfCards < 1 || numberOfCards > Deck.NUMBER_OF_CARDS) {
+    if (numberOfCards < 1 || numberOfCards > this.size) {
       throw new PlayingCardError(`Invalid number of cards: ${numberOfCards}`);
     }
 
@@ -59,13 +59,13 @@ class Deck {
   multiPlayerDeal(numberOfPlayers, numberOfCards = 1) {
     const cardsNeeded = numberOfPlayers * numberOfCards;
 
-    if (numberOfPlayers < 1 || numberOfPlayers > Deck.NUMBER_OF_CARDS) {
+    if (numberOfPlayers < 1 || numberOfPlayers > this.size) {
       throw new PlayingCardError(
         `Invalid number of players: ${numberOfPlayers}`
       );
     }
 
-    if (cardsNeeded < 1 || cardsNeeded > Deck.NUMBER_OF_CARDS) {
+    if (cardsNeeded < 1 || cardsNeeded > this.size) {
       throw new PlayingCardError(`Invalid number of cards: ${cardsNeeded}`);
     }
 
