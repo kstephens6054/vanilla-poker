@@ -1,13 +1,15 @@
-import { Card } from './Card.js';
-import { PlayingCardError } from './PlayingCardError.js';
-import { arraySkipIterator } from './utility.js';
+import { Card } from "./Card.js";
+import { PlayingCardError } from "./PlayingCardError.js";
+import { arraySkipIterator } from "./utility.js";
 
 class Deck {
   static NUMBER_OF_CARDS = 52;
 
-  constructor() {
-    this._buildDeck();
-    //this[Symbol.iterator] = this._cards[Symbol.iterator];
+  constructor(size = 52) {
+    this._size = size;
+    if (new.target === Deck) {
+      this._buildDeck();
+    }
   }
 
   *[Symbol.iterator]() {
@@ -16,12 +18,16 @@ class Deck {
     }
   }
 
+  get size() {
+    return Deck.NUMBER_OF_CARDS;
+  }
+
   get cardsRemaining() {
     return this._cards.length;
   }
 
   _buildDeck() {
-    this._cards = new Array(Deck.size);
+    this._cards = new Array(this.size);
     let index = 0;
 
     for (const suit of Card.suits()) {
@@ -37,7 +43,7 @@ class Deck {
   }
 
   deal(numberOfCards = 1) {
-    if (numberOfCards < 1 || numberOfCards > Deck.NUMBER_OF_CARDS) {
+    if (numberOfCards < 1 || numberOfCards > this.size) {
       throw new PlayingCardError(`Invalid number of cards: ${numberOfCards}`);
     }
 
@@ -53,13 +59,13 @@ class Deck {
   multiPlayerDeal(numberOfPlayers, numberOfCards = 1) {
     const cardsNeeded = numberOfPlayers * numberOfCards;
 
-    if (numberOfPlayers < 1 || numberOfPlayers > Deck.NUMBER_OF_CARDS) {
+    if (numberOfPlayers < 1 || numberOfPlayers > this.size) {
       throw new PlayingCardError(
         `Invalid number of players: ${numberOfPlayers}`
       );
     }
 
-    if (cardsNeeded < 1 || cardsNeeded > Deck.NUMBER_OF_CARDS) {
+    if (cardsNeeded < 1 || cardsNeeded > this.size) {
       throw new PlayingCardError(`Invalid number of cards: ${cardsNeeded}`);
     }
 

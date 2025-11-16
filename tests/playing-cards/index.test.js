@@ -10,6 +10,10 @@ describe('Package playing-cards exports', () => {
     expect(PlayingCards.Deck).toBeDefined();
   });
 
+  test('Package exports class MultipleDeck', () => {
+    expect(PlayingCards.MultipleDeck).toBeDefined();
+  });
+
   test('Package exports class PlayingCardError', () => {
     expect(PlayingCards.PlayingCardError).toBeDefined();
   });
